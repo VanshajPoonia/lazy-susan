@@ -1,0 +1,10 @@
+{
+  "name": "Lazy Susan",
+  "short_name": "Lazy Susan",
+  "description": "Photograph the receipt, tap who had what, paste the split. Reads the receipt on your phone.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f0e6",
+  "theme_color": "#221d17",
+  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

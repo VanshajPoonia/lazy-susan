@@ -1,0 +1,39 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Lazy Susan: reading receipts in the browser</title>
+<p id="out">loading…</p>
+<script type="module">
+// Reads a list of receipts with exactly the code, model files and steps the page uses (Donut,
+// then Florence-2 when Donut's read does not add up), in a real browser, so
+// scripts/browser.mjs can score what the page does.
+import * as tf from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.1/dist/transformers.min.js';
+import { reader } from '../src/reader.js';
+import { ocr } from '../src/ocr.js';
+import { toJSON, toReceipt } from '../src/donut.js';
+import { check } from '../src/check.js';
+
+tf.env.allowLocalModels = true;
+tf.env.allowRemoteModels = false;
+tf.env.localModelPath = '/node_modules/@huggingface/transformers/.cache/';
+
+const q = new URLSearchParams(location.search);
+const list = await (await fetch(q.get('list'))).json();
+const read = await reader(tf, { device: q.get('device') || 'wasm' });
+let readText = null;
+window.results = [];
+for (const [k, r] of list.entries()) {
+  const image = await tf.RawImage.fromURL(r.url);
+  const t = performance.now();
+  const seq = await read(image);
+  const ms = Math.round(performance.now() - t);
+  let second = null;
+  if (check(toReceipt(toJSON(seq))).status !== 'adds-up') {
+    readText ??= await ocr(tf, { device: 'wasm' });
+    const t2 = performance.now();
+    second = { ...(await readText(image)), ms: Math.round(performance.now() - t2) };
+  }
+  window.results.push({ id: r.id, ms, seq, ocr: second });
+  document.querySelector('#out').textContent = `${k + 1}/${list.length}`;
+}
+window.done = true;
+</script>

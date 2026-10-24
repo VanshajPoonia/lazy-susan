@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lazy Susan</title>
+  <meta name="description" content="Photograph the receipt, tap who had what, paste the split in the group chat. An open model reads the receipt on your phone, and the receipt's own arithmetic checks it.">
+  <meta name="theme-color" content="#f6f0e6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script type="module" src="src/app.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="kicker">Lazy Susan</p>
+      <h1>The person who paid should not also have to do the maths.</h1>
+      <p class="lede">Take a photo of the receipt. An open model reads every line on your phone, the receipt's own arithmetic checks what it read, and you tap who had what. Tax, service and tip are shared in proportion. Paste the result in the group chat.</p>
+      <p class="promise"><span aria-hidden="true">🦥</span> No sign-up, no upload, no typing in prices. Works offline once it has loaded.</p>
+    </header>
+
+    <section class="card input" aria-label="Your receipt">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="image/*" capture="environment">
+        <span><strong>Take a photo of the receipt</strong> or choose one</span>
+      </label>
+      <div class="samples">
+        <span class="small">Or try one:</span>
+        <button class="chip" data-sample="deli.jpg" data-note="(A receipt from WildReceipt, a public dataset of receipts Donut was never trained on.)">Lunch at a deli</button>
+        <button class="chip" data-sample="wine.jpg" data-note="(WildReceipt. Watch what happens to the restaurant's address.)">Portuguese wine bar</button>
+        <button class="chip" data-sample="steak.jpg" data-note="(WildReceipt. Donut's read of this one does not add up; Florence-2's does.)">Steak and salmon</button>
+        <button class="chip" data-sample="cord.png" data-note="(From CORD's test set: Indonesian receipts like the ones Donut was trained on. Rupiah, thousands separators, service and tax.)">Thai dinner, Indonesia</button>
+      </div>
+      <p id="status" class="status small" aria-live="polite"></p>
+      <progress id="bar" max="1" value="0" hidden></progress>
+      <p class="small">The reader is <strong>Donut</strong>, an open-weight document model from NAVER Clova (MIT licence), trained on receipts. When its read does not add up, <strong>Florence-2</strong> (Microsoft, MIT licence) takes a second look, and the read that adds up wins. The first photo downloads Donut, <span id="size">219 MB</span>, once; Florence-2 (266 MB) only if a receipt needs it.</p>
+    </section>
+
+    <section id="bill" class="bill" hidden aria-live="polite">
+      <div class="card">
+        <div class="bill-grid">
+          <figure class="photo"><img id="photo" alt="The receipt"></figure>
+          <div>
+            <p class="kicker">Who had what?</p>
+            <p class="small">Pick a person, then tap their items. Tap again to undo. Shared plates: tap them for each person. Lines nobody claims are split between everyone.</p>
+            <div id="people" class="people"></div>
+            <label class="rename small">Name <input id="person-name" autocomplete="off" maxlength="20"></label>
+            <div id="verdict"></div>
+            <ol id="lines" class="lines"></ol>
+            <ul id="extras" class="extras"></ul>
+            <div class="tip">
+              <label class="small" for="tip">Tip</label>
+              <input id="tip" inputmode="decimal" placeholder="0">
+              <button class="mini" data-tip="10">10%</button>
+              <button class="mini" data-tip="15">15%</button>
+              <button class="mini" data-tip="20">20%</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="kicker">The split</p>
+        <h2>Everyone's share of <span id="pay"></span></h2>
+        <ul id="shares" class="shares"></ul>
+        <textarea id="msg" readonly aria-label="Message for the group chat"></textarea>
+        <button id="copy" class="primary">Copy for the group chat</button>
+      </div>
+    </section>
+
+    <footer>
+      <p>It reads, the receipt checks, you confirm: when the lines do not add up, it says so instead of guessing. Tested on 572 real receipts, see <a href="https://github.com/VanshajPoonia/lazy-susan#how-well-it-works">how well it works</a>.</p>
+      <p>Model: <a href="https://huggingface.co/naver-clova-ix/donut-base-finetuned-cord-v2">Donut</a> (MIT) by NAVER Clova, fine-tuned on <a href="https://github.com/clovaai/cord">CORD</a>. Sample receipts from <a href="https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/kie.html">WildReceipt</a> (Apache-2.0) and CORD (CC BY 4.0). <a href="https://github.com/VanshajPoonia/lazy-susan">Source</a>, MIT.</p>
+    </footer>
+  </main>
+</body>
+</html>
