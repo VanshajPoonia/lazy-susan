@@ -1,6 +1,6 @@
 {
-  "name": "Lazy Susan",
-  "short_name": "Lazy Susan",
+  "name": "SplitSnap: Receipt Bill Splitter",
+  "short_name": "SplitSnap",
   "description": "Photograph the receipt, tap who had what, paste the split. Reads the receipt on your phone.",
   "start_url": "./",
   "display": "standalone",

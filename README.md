@@ -1,4 +1,6 @@
-# Lazy Susan 🦥
+# SplitSnap 🦥
+
+**Receipt Bill Splitter.** Formerly called Lazy Susan.
 
 Photograph the receipt, tap who had what, paste the split in the group chat. The person who paid should not also have to do the maths.
 
@@ -6,7 +8,7 @@ Photograph the receipt, tap who had what, paste the split in the group chat. The
 
 **Live:** https://vanshajpoonia.github.io/lazy-susan/
 
-<img src="docs/split.png" alt="Lazy Susan with a restaurant receipt: the lines, who had what, a green 'it adds up' check, and everyone's share" width="640">
+<img src="docs/split.png" alt="SplitSnap with a restaurant receipt: the lines, who had what, a green 'it adds up' check, and everyone's share" width="640">
 
 ## A receipt is a checksum
 
@@ -16,7 +18,7 @@ The arithmetic can also fix things. When exactly one line makes the numbers work
 
 ## How it works
 
-<img src="docs/how-it-works.png" alt="How Lazy Susan works: photo, Donut, Florence-2 only if Donut's read does not add up, does it add up, who had what, group chat" width="720">
+<img src="docs/how-it-works.png" alt="How SplitSnap works: photo, Donut, Florence-2 only if Donut's read does not add up, does it add up, who had what, group chat" width="720">
 
 - **Donut** ([NAVER Clova](https://github.com/clovaai/donut), MIT) is OCR-free: an image encoder and a text decoder that writes the receipt out as tags (`<s_nm>Pad Thai</s_nm><s_price>10.95</s_price>…`). This is the version fine-tuned on CORD, 800 Indonesian receipts, quantised to 8 bits, run with transformers.js. `src/donut.js` turns the tags into lines.
 - **Florence-2** ([Microsoft](https://huggingface.co/microsoft/Florence-2-base-ft), MIT) is the second look. Its OCR returns every piece of text with its position; `src/rows.js` groups the pieces into rows (a name on the left, an amount on the right) and reads the labelled rows at the bottom (subtotal, tax, total, and payment lines to ignore). It only runs, and is only downloaded, when Donut's read does not add up.
@@ -58,7 +60,7 @@ What the tables say:
 - **The second reader is what makes it lazy.** Florence-2 reads the receipts Donut cannot vouch for, and the arithmetic picks between them: completely right receipts go from 21% to 33%, green ticks from 83 to 131, with the same 93% behind them. Each model is right on receipts the other gets wrong.
 - **It costs a little on CORD.** When neither read adds up, the app keeps the one with more lines, and on Indonesian receipts that is sometimes Florence-2's weaker read (94% of shown lines right instead of 99%). The rule was chosen on the WildReceipt tuning receipts, before the test.
 - **When it says it does not add up, believe it.** Only 8% of those WildReceipt receipts are completely right, so the warning means: check the photo.
-- **Lazy payoff.** A WildReceipt receipt has 5 lines on average, and typing just their prices is 24 keystrokes before a single name. On a third of them Lazy Susan needs none; on the green ones it is right 93% of the time; on the rest it shows what is off by how much, next to the photo.
+- **Lazy payoff.** A WildReceipt receipt has 5 lines on average, and typing just their prices is 24 keystrokes before a single name. On a third of them SplitSnap needs none; on the green ones it is right 93% of the time; on the rest it shows what is off by how much, next to the photo.
 
 The tuning receipts (`SET=wild-tune npm test`, 137 scoreable): Donut alone 22% completely right and 32 green ticks (84% right); with Florence-2, 34% and 48 green ticks (83% right). The bar the test has to pass (green ticks at least 80% right, more lines found than Donut alone, shown lines more accurate than Donut as read) was set from these before the test receipts were read.
 

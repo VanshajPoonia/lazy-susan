@@ -1,5 +1,5 @@
 // Offline support. Once the model is cached (transformers.js keeps it in Cache Storage),
-// Lazy Susan works with no connection at all: at the table, in a basement restaurant,
+// SplitSnap works with no connection at all: at the table, in a basement restaurant,
 // abroad without data. It is also the simplest proof that the photo goes nowhere.
 const SHELL = 'ls-shell-v1';
 const RUNTIME = 'ls-runtime-v1';
